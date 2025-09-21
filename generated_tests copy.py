@@ -4,6 +4,7 @@ import pytest
 
 BASE_URL = os.getenv("TEST_API_URL", "http://localhost:8000")
 
+
 def test_endpoint_with_max():
     """
     main.py returns 200 if param == 'max' (and never checks auth).
@@ -11,6 +12,7 @@ def test_endpoint_with_max():
     response = requests.get(f"{BASE_URL}/api/endpoint?param=max")
     assert response.status_code == 200, f"Expected 200, got {response.status_code}"
     assert response.json() == {"result": "success"}
+
 
 def test_endpoint_with_min():
     """
@@ -20,12 +22,14 @@ def test_endpoint_with_min():
     assert response.status_code == 200, f"Expected 200, got {response.status_code}"
     assert response.json() == {"result": "success"}
 
+
 def test_endpoint_no_param_no_auth_header():
     """
     If param != 'max'/'min' and no Authorization header, main.py returns 401.
     """
     response = requests.get(f"{BASE_URL}/api/endpoint")
     assert response.status_code == 401, f"Expected 401, got {response.status_code}"
+
 
 def test_endpoint_invalid_api_key():
     """
@@ -35,6 +39,7 @@ def test_endpoint_invalid_api_key():
     response = requests.get(f"{BASE_URL}/api/endpoint?param=something", headers=headers)
     assert response.status_code == 403, f"Expected 403, got {response.status_code}"
 
+
 def test_endpoint_random_auth_key():
     """
     If param != 'max'/'min' and header != 'Bearer invalid-api-key', main.py returns 404.
@@ -43,12 +48,14 @@ def test_endpoint_random_auth_key():
     response = requests.get(f"{BASE_URL}/api/endpoint?param=something", headers=headers)
     assert response.status_code == 404, f"Expected 404, got {response.status_code}"
 
+
 def test_nonexistent_endpoint():
     """
     /api/nonexistent always returns 404.
     """
     response = requests.get(f"{BASE_URL}/api/nonexistent")
     assert response.status_code == 404, f"Expected 404, got {response.status_code}"
+
 
 def test_error_endpoint():
     """

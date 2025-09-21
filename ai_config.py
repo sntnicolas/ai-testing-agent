@@ -1,6 +1,7 @@
 import os
 
-def create_llm(provider: str = "openai"):
+
+def create_llm(provider: str = "google"):
     """
     Factory method to create an LLM depending on provider.
     Supported: "openai", "gigachat", "google"
@@ -10,9 +11,10 @@ def create_llm(provider: str = "openai"):
         # pip install langchain-gigachat
         from langchain_gigachat.chat_models import GigaChat
         return GigaChat(
-            credentials=os.getenv("GIGACHAT_CREDENTIALS"),
-            verify_ssl_certs=False,   # при необходимости
-            model="GigaChat",
+            credentials=os.getenv("GIGACHAT_API_KEY"),
+            verify_ssl_certs=False,  # при необходимости
+            model="GigaChat-2",
+            scope="GIGACHAT_API_PERS",
             temperature=0.0
         )
 
@@ -20,9 +22,12 @@ def create_llm(provider: str = "openai"):
         # pip install langchain-google-genai
         from langchain_google_genai import ChatGoogleGenerativeAI
         return ChatGoogleGenerativeAI(
-            model="gemini-1.5-pro",   # можно заменить на gemini-1.5-flash для дешевле/быстрее
+            model="gemini-2.5-flash",  # можно заменить на gemini-1.5-flash для дешевле/быстрее
             temperature=0.0,
-            google_api_key=os.getenv("GOOGLE_API_KEY")
+            google_api_key=os.getenv("GOOGLE_API_KEY"),
+            config = types.GenerateContentConfig(
+                thinking_config=types.ThinkingConfig(thinking_budget=0)  # Disables thinking
+            )
         )
 
     elif provider == "openai":
@@ -39,4 +44,4 @@ def create_llm(provider: str = "openai"):
 
 
 # Удобный глобальный объект LLM, чтобы можно было просто импортировать
-llm = create_llm(os.getenv("LLM_PROVIDER", "openai"))
+llm = create_llm(os.getenv("LLM_PROVIDER", "gigachat"))

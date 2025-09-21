@@ -1,9 +1,11 @@
 import os
 from langchain.agents import Tool, initialize_agent, AgentType
 from langchain.chat_models import ChatOpenAI
+from langchain_gigachat.chat_models import GigaChat
 
 # Import our tool functions
 from agent_tools import plan_tool, generate_tool, run_tool, feedback_tool
+
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 1) New function: safe_run_tests
@@ -44,11 +46,11 @@ def safe_run_tests(input_text: str) -> str:
         return "Tests passed on second attempt after reflection.\n\n" + second_run_output
     else:
         return (
-            "Tests still failed after one reflection attempt.\n\n"
-            "First run output:\n" + first_run_output + "\n\n"
-            "Feedback response:\n" + feedback_output + "\n\n"
-            "Regeneration output:\n" + generate_output + "\n\n"
-            "Second run output:\n" + second_run_output
+                "Tests still failed after one reflection attempt.\n\n"
+                "First run output:\n" + first_run_output + "\n\n"
+                                                           "Feedback response:\n" + feedback_output + "\n\n"
+                                                                                                      "Regeneration output:\n" + generate_output + "\n\n"
+                                                                                                                                                   "Second run output:\n" + second_run_output
         )
 
 
@@ -72,6 +74,13 @@ llm = ChatOpenAI(
     openai_api_key=os.getenv("OPENROUTER_API_KEY"),
     openai_api_base="https://openrouter.ai/api/v1",
     model_name="anthropic/claude-2"  # Example model; adjust as needed
+)
+
+llm = ChatGigaChat(
+    model=GIGACHAT_MODEL,
+    credentials=GIGACHAT_CREDENTIALS,
+    scope=GIGACHAT_SCOPE,
+    verify_ssl_certs=False
 )
 
 # -----------------------------------------------------------------------------
@@ -108,8 +117,10 @@ agent = initialize_agent(
     verbose=True
 )
 
+
 def chat_with_agent(user_input: str) -> str:
     return agent.run(user_input)
+
 
 if __name__ == "__main__":
     print("AI Testing Agent is running. Type 'quit' or 'exit' to stop.")
@@ -117,6 +128,6 @@ if __name__ == "__main__":
         user_input = input("\nUser: ")
         if user_input.lower() in ["quit", "exit"]:
             break
-        
+
         response = chat_with_agent(user_input)
         print(f"\nAgent: {response}")
