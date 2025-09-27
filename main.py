@@ -1,4 +1,6 @@
 from fastapi import FastAPI, HTTPException, Request
+from dotenv import load_dotenv
+load_dotenv()  # автоматически загрузит .env в os.environ
 
 app = FastAPI()
 
