@@ -5,6 +5,8 @@ import sys
 import requests
 import subprocess
 import re
+from dotenv import load_dotenv
+load_dotenv()
 
 """
 Open Source LLM-Powered API Testing Agent
@@ -31,6 +33,7 @@ Requires:
 #  call_openrouter: Sends a prompt to an LLM via OpenRouter
 # -----------------------------------------------------------------------------
 def call_openrouter(prompt: str) -> str:
+    load_dotenv()
     openrouter_key = os.getenv("OPENROUTER_API_KEY")
     if not openrouter_key:
         return (
@@ -45,7 +48,7 @@ def call_openrouter(prompt: str) -> str:
         "X-Title": "LLM-based API Testing",
     }
     data = {
-        "model": "openai/gpt-4o-mini",  # Adjust if needed (anthropic/claude-3.5, etc.)
+        "model": "google/gemini-2.5-flash",  # Adjust if needed (anthropic/claude-3.5, etc.) "openai/gpt-4o-mini"
         "messages": [
             {
                 "role": "system",
