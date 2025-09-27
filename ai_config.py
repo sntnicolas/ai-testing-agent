@@ -1,11 +1,13 @@
 import os
+from dotenv import load_dotenv
 
-def create_llm(provider: str = "openai"):
+
+def create_llm(provider: str = "openrouter"):
     """
     Factory method to create an LLM depending on provider.
     Supported: "openai", "gigachat", "google"
     """
-
+    load_dotenv()
     if provider == "gigachat":
         # pip install langchain-gigachat
         from langchain_gigachat.chat_models import GigaChat
@@ -25,13 +27,14 @@ def create_llm(provider: str = "openai"):
             google_api_key=os.getenv("GOOGLE_API_KEY")
         )
 
-    elif provider == "openai":
-        from langchain.chat_models import ChatOpenAI
+    elif provider == "openrouter":
+        # from langchain.chat_models import ChatOpenAI
+        from langchain_openai import ChatOpenAI
         return ChatOpenAI(
             temperature=0.0,
-            openai_api_key=os.getenv("OPENROUTER_API_KEY"),
-            openai_api_base="https://openrouter.ai/api/v1",
-            model_name="anthropic/claude-2"  # или gpt-4.1, или другое
+            api_key=os.getenv("OPENROUTER_API_KEY"),
+            base_url="https://openrouter.ai/api/v1",
+            model= "gemini-2.5-flash"  # или gpt-4.1, anthropic/claude-2, google/gemini-pro и другое
         )
 
     else:
@@ -39,4 +42,4 @@ def create_llm(provider: str = "openai"):
 
 
 # Удобный глобальный объект LLM, чтобы можно было просто импортировать
-llm = create_llm(os.getenv("LLM_PROVIDER", "openai"))
+llm = create_llm(os.getenv("LLM_PROVIDER", "openrouter"))

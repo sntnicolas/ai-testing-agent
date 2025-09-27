@@ -1,10 +1,15 @@
 import os
 from langchain.agents import Tool, initialize_agent, AgentType
-from langchain.chat_models import ChatOpenAI
+# from langchain.chat_models import ChatOpenAI
+from langchain_openai import ChatOpenAI
+
 
 # Import our tool functions
 from agent_tools import plan_tool, generate_tool, run_tool, feedback_tool
+from ai_config import create_llm
 
+from dotenv import load_dotenv
+load_dotenv()
 # ─────────────────────────────────────────────────────────────────────────────
 # 1) New function: safe_run_tests
 #    This function runs the tests once, checks if they failed, and if so:
@@ -67,12 +72,14 @@ safe_run_tool = Tool(
 # -----------------------------------------------------------------------------
 # Initialize the LLM
 # -----------------------------------------------------------------------------
-llm = ChatOpenAI(
-    temperature=0.0,  # to reduce randomness
-    openai_api_key=os.getenv("OPENROUTER_API_KEY"),
-    openai_api_base="https://openrouter.ai/api/v1",
-    model_name="anthropic/claude-2"  # Example model; adjust as needed
-)
+llm = create_llm(os.getenv("LLM_PROVIDER", "openrouter"))
+
+# llm = ChatOpenAI(
+#     temperature=0.0,  # to reduce randomness
+#     openai_api_key=os.getenv("OPENROUTER_API_KEY"),
+#     openai_api_base="https://openrouter.ai/api/v1",
+#     model_name="anthropic/claude-2"  # Example model; adjust as needed
+# )
 
 # -----------------------------------------------------------------------------
 # Existing Tools
@@ -109,7 +116,7 @@ agent = initialize_agent(
 )
 
 def chat_with_agent(user_input: str) -> str:
-    return agent.run(user_input)
+    return agent.invoke(user_input)
 
 if __name__ == "__main__":
     print("AI Testing Agent is running. Type 'quit' or 'exit' to stop.")
