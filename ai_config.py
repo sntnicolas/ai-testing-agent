@@ -34,6 +34,14 @@ def create_llm(provider: str = "openrouter"):
             temperature=0.0,
             api_key=os.getenv("OPENROUTER_API_KEY"),
             base_url="https://openrouter.ai/api/v1",
+            model= "google/gemini-2.5-flash"  # или anthropic/claude-2, google/gemini-pro и другое
+        )
+
+    elif provider == "google":
+        from langchain_google_genai import ChatGoogleGenerativeAI
+        return ChatGoogleGenerativeAI(
+            temperature=0.0,
+            api_key=os.getenv("GOOGLE_API_KEY"),
             model= "gemini-2.5-flash"  # или gpt-4.1, anthropic/claude-2, google/gemini-pro и другое
         )
 
