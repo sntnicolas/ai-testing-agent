@@ -2,6 +2,8 @@ import os
 from langchain.agents import Tool, initialize_agent, AgentType
 # from langchain.chat_models import ChatOpenAI
 from langchain_openai import ChatOpenAI
+import warnings
+
 
 
 # Import our tool functions
@@ -10,6 +12,9 @@ from ai_config import create_llm
 
 from dotenv import load_dotenv
 load_dotenv()
+
+# отключаем именно DeprecationWarning от LangChain
+warnings.filterwarnings("ignore", message="LangChain agents will continue to be supported, but it is recommended for new use cases to be built with LangGraph")
 # ─────────────────────────────────────────────────────────────────────────────
 # 1) New function: safe_run_tests
 #    This function runs the tests once, checks if they failed, and if so:
